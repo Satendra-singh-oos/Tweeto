@@ -42,7 +42,7 @@ export default function Home() {
             </ul>
             <div className="mt-4 px-3">
               <button className="bg-[#1d9bf0] py-2 px-4 rounded-full w-full text-lg font-semibold">
-                Tweet
+                Tweeto
               </button>
             </div>
           </div>

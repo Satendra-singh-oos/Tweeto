@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Quicksand } from "next/font/google";
 import "./globals.css";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={quickSand.className}>{children}</body>
+      <body className={quickSand.className}>
+        <GoogleOAuthProvider clientId="">{children}</GoogleOAuthProvider>
+      </body>
     </html>
   );
 }
