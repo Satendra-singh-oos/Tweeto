@@ -14,6 +14,17 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }: any) {
+      addUtilities({
+        ".scrollbar-none": {
+          "scrollbar-width": "none" /* For Firefox */,
+          "&::-webkit-scrollbar": {
+            display: "none" /* For Chrome, Safari, and Edge */,
+          },
+        },
+      });
+    },
+  ],
 };
 export default config;
