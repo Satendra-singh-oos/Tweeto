@@ -14,7 +14,7 @@ const FeedCard = () => {
             alt="user-avatar"
             height={50}
             width={50}
-            className="h-full w-full rounded-full"
+            className="rounded-full"
           />
         </div>
         <div className="w-full">
