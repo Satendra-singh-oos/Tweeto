@@ -8,8 +8,8 @@ import { SlOptions } from "react-icons/sl";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { useCallback } from "react";
 import toast from "react-hot-toast";
-import { graphqlClient } from "../../client/api";
-import { verifyUserGoogleTokenQuery } from "../../graphql/query/user";
+import { graphqlClient } from "../lib/client/api";
+import { verifyUserGoogleTokenQuery } from "../lib/graphql/query/user";
 
 interface TwitterSidebarBtn {
   title: string;
