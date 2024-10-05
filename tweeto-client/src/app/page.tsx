@@ -1,17 +1,25 @@
 "use client";
 import Image from "next/image";
 import { BsTwitter } from "react-icons/bs";
-import { BiHomeCircle, BiHash, BiBookmark, BiUser } from "react-icons/bi";
+import {
+  BiHomeCircle,
+  BiHash,
+  BiBookmark,
+  BiUser,
+  BiImageAlt,
+} from "react-icons/bi";
 import { BsBell, BsEnvelope } from "react-icons/bs";
 import FeedCard from "@/component/FeedCard";
 import { SlOptions } from "react-icons/sl";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import { graphqlClient } from "../lib/client/api";
 import { verifyUserGoogleTokenQuery } from "../lib/graphql/query/user";
 import { useCurrentUser } from "@/lib/hooks/user";
 import { useQueryClient } from "@tanstack/react-query";
+import { useCreateTweet, useGetAllTweets } from "@/lib/hooks/tweet";
+import { Tweet } from "@/lib/gql/graphql";
 
 interface TwitterSidebarBtn {
   title: string;
@@ -30,7 +38,29 @@ const sidebarMenuItem: TwitterSidebarBtn[] = [
 
 export default function Home() {
   const { user } = useCurrentUser();
+
+  const { tweets = [] } = useGetAllTweets();
   const queryClient = useQueryClient();
+  const { mutateAsync } = useCreateTweet();
+
+  const [content, setContent] = useState("");
+  const [imageURL, setImageURL] = useState("");
+
+  const handleSelectImage = useCallback(() => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+  }, []);
+
+  const handleCreateTweet = useCallback(async () => {
+    await mutateAsync({
+      content,
+      imageURL,
+    });
+    setContent("");
+    setImageURL("");
+  }, [mutateAsync, content, imageURL]);
   const handleLoginWithGoogle = useCallback(
     async (cred: CredentialResponse) => {
       const googleToken = cred.credential;
@@ -98,11 +128,46 @@ export default function Home() {
           )}
         </div>
         <div className="col-span-5 border-r-[1px] border-l-[1px] h-screen  overflow-scroll scrollbar-none  border-gray-900">
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
-          <FeedCard />
+          <div className="border border-r-0 border-l-0  border-gray-600 p-5 hover:bg-slate-900 transition-all cursor-pointer">
+            <div className="grid grid-cols-12 gap-2">
+              <div className="col-span-1 ">
+                <Image
+                  src={
+                    user?.profileImageURL ||
+                    "https://avatars.githubusercontent.com/u/59407093?v=4"
+                  }
+                  alt="user-avatar"
+                  height={50}
+                  width={50}
+                  className="rounded-full"
+                />
+              </div>
+              <div className="col-span-11">
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  className="w-full bg-transparent text-xl px-3 border-b border-slate-700"
+                  placeholder="What's happening?"
+                  rows={3}
+                ></textarea>
+                <div className="mt-2 flex justify-between items-center">
+                  <BiImageAlt
+                    onClick={handleSelectImage}
+                    className="text-xl "
+                  />
+                  <button
+                    className="bg-[#1d9bf0] py-2 px-4 rounded-full  text-lg font-semibold"
+                    onClick={handleCreateTweet}
+                  >
+                    Tweeto
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {tweets?.map((tweet) =>
+            tweet ? <FeedCard key={tweet?.id} data={tweet as Tweet} /> : null
+          )}
         </div>
         <div className="col-span-4 p-5">
           {!user && (
