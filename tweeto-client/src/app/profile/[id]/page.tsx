@@ -1,7 +1,5 @@
 "use client";
 import FeedCard from "@/component/FeedCard";
-import LeftSideBar from "@/component/LeftSideBar";
-import RightSideBar from "@/component/RightSideBar";
 import TwitterLayout from "@/component/TwitterLayout";
 import { graphqlClient } from "@/lib/client/api";
 import { Tweet, User } from "@/lib/gql/graphql";
@@ -15,12 +13,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { userInfo } from "os";
+
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { BsArrowLeftShort } from "react-icons/bs";
 
-const page = () => {
+export default function Page() {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<User>();
   const { user: currentUser } = useCurrentUser();
@@ -149,6 +147,4 @@ const page = () => {
       </TwitterLayout>
     </>
   );
-};
-
-export default page;
+}
