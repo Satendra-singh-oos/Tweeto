@@ -58,6 +58,41 @@ const extraResolvers = {
       });
       return result.map((el) => el.following);
     },
+
+    recommendedUsers: async (parent: User, _: any, ctx: GraphqlContext) => {
+      // simple algo if a follow-> b and b->followsc c get recommendedation of a and a will get recommedation of c
+      if (!ctx.user) return [];
+
+      // get the people who user is following
+      const myFollowings = await prismaClient.follows.findMany({
+        where: {
+          follower: { id: ctx.user.id },
+        },
+        include: {
+          following: {
+            include: { followers: { include: { following: true } } },
+          },
+        },
+      });
+
+      const users: User[] = [];
+
+      for (const followings of myFollowings) {
+        for (const followingOfFollowedUser of followings.following.followers) {
+          // case when a->b and b->a what if a->c then we need to ignore
+          if (
+            followingOfFollowedUser.following.id !== ctx.user.id &&
+            myFollowings.findIndex(
+              (e) => e?.followingId === followingOfFollowedUser.following.id
+            ) < 0
+          ) {
+            users.push(followingOfFollowedUser.following);
+          }
+        }
+      }
+
+      return users;
+    },
   },
 };
 
