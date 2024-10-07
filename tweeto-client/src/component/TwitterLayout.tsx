@@ -2,8 +2,9 @@
 
 import LeftSideBar from "@/component/LeftSideBar";
 import RightSideBar from "@/component/RightSideBar";
+import React from "react";
 
-const TwitterLayout = ({ children }: any) => {
+const TwitterLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       {" "}

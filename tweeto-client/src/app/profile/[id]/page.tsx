@@ -1,4 +1,5 @@
 "use client";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import FeedCard from "@/component/FeedCard";
 import TwitterLayout from "@/component/TwitterLayout";
 import { graphqlClient } from "@/lib/client/api";
@@ -14,7 +15,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { BsArrowLeftShort } from "react-icons/bs";
 
