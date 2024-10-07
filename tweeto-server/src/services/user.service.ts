@@ -68,12 +68,7 @@ class UserService {
   }
 
   public static async getUserById(id: string) {
-    const cachedCurrentUser = await redisClient.get(`USERBY_ID-${id}`);
-
-    if (cachedCurrentUser) return JSON.parse(cachedCurrentUser);
     const user = prismaClient.user.findUnique({ where: { id } });
-
-    await redisClient.set(`USERBY_ID-${id}`, JSON.stringify(user));
 
     return user;
   }
