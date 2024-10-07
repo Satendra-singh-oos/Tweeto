@@ -32,14 +32,14 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
           </Link>
         </div>
         <div className="w-full">
-          <h5 className="mb-1 flex items-center gap-x-2 cursor-pointer">
+          <h5 className="mb-1 flex items-center gap-x-2 cursor-pointer text-slate-400">
             <Link href={`/profile/${data.author?.id}`}>
               {data.author?.firstName} {data.author?.lastName}
             </Link>
           </h5>
-          <p className="mb-2">{data.content}</p>
+          <p className="mb-2 ml-2">{data.content}</p>
 
-          <div className="flex gap-4 justify-evenly items-center ">
+          <div className="flex gap-4 justify-evenly items-center  mt-5">
             <div>
               <BsMessenger />
             </div>

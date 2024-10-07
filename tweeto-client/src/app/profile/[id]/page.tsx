@@ -7,8 +7,10 @@ import { graphqlClient } from "@/lib/client/api";
 import { Tweet, User } from "@/lib/gql/graphql";
 import { getUserByIdQuery } from "@/lib/graphql/query/user";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { BsArrowLeftShort } from "react-icons/bs";
 
 const page = () => {
@@ -29,6 +31,7 @@ const page = () => {
         }
       } catch (error) {
         console.error("Error fetching user info:", error);
+        toast.error("Error fetching user info:");
       }
     };
 
@@ -43,7 +46,9 @@ const page = () => {
         <div>
           <div>
             <nav className="flex items-center gap-3 py-3 px-3">
-              <BsArrowLeftShort className="text-4xl" />
+              <Link href="/">
+                <BsArrowLeftShort className="text-4xl" />
+              </Link>
             </nav>
             <h1 className="text-2xl font-bold">
               {user?.firstName} {user?.lastName}
