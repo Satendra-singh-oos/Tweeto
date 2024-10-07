@@ -38,6 +38,14 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
             </Link>
           </h5>
           <p className="mb-2 ml-2">{data.content}</p>
+          {data.imageURL && (
+            <Image
+              src={data.imageURL}
+              alt="tweet-image"
+              width={400}
+              height={400}
+            />
+          )}
 
           <div className="flex gap-4 justify-evenly items-center  mt-5">
             <div>

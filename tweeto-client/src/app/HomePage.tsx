@@ -8,6 +8,10 @@ import { useCallback, useState } from "react";
 import { useCurrentUser } from "@/lib/hooks/user";
 import { useCreateTweet, useGetAllTweets } from "@/lib/hooks/tweet";
 import { Tweet } from "@/lib/gql/graphql";
+import { graphqlClient } from "@/lib/client/api";
+import { getSignedURLForTweetQuery } from "@/lib/graphql/query/tweet";
+import toast from "react-hot-toast";
+import axios from "axios";
 const HomePage = () => {
   const { user } = useCurrentUser();
 
@@ -17,12 +21,47 @@ const HomePage = () => {
   const [content, setContent] = useState("");
   const [imageURL, setImageURL] = useState("");
 
+  const handleInputChangeFile = useCallback((input: HTMLInputElement) => {
+    return async (event: Event) => {
+      event.preventDefault();
+      const file: File | null | undefined = input.files?.item(0);
+      if (!file) return;
+
+      const { getSignedURLForTweet } = await graphqlClient.request(
+        getSignedURLForTweetQuery,
+        {
+          imageName: file.name,
+          imageType: file.type,
+        }
+      );
+
+      if (getSignedURLForTweet) {
+        toast.loading("Uploading...", { id: "2" });
+        await axios.put(getSignedURLForTweet, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+
+        toast.success("Upload Completed", { id: "2" });
+        const url = new URL(getSignedURLForTweet);
+        const myFilePath = `${url.origin}${url.pathname}`;
+        setImageURL(myFilePath);
+      }
+    };
+  }, []);
+
   const handleSelectImage = useCallback(() => {
     const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
+
+    const handlerFn = handleInputChangeFile(input);
+
+    input.addEventListener("change", handlerFn);
+
     input.click();
-  }, []);
+  }, [handleInputChangeFile]);
 
   const handleCreateTweet = useCallback(async () => {
     await mutateAsync({
@@ -57,6 +96,15 @@ const HomePage = () => {
                 placeholder="What's happening?"
                 rows={3}
               ></textarea>
+
+              {imageURL && (
+                <Image
+                  src={imageURL}
+                  alt="Tweet-img"
+                  width={300}
+                  height={300}
+                />
+              )}
               <div className="mt-2 flex justify-between items-center">
                 <BiImageAlt onClick={handleSelectImage} className="text-xl " />
                 <button
